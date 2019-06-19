@@ -86,3 +86,8 @@
                             :img "https://res.cloudinary.com/schae/image/upload/f_auto,q_auto/v1519552696/giggin/shine-tang-425878.jpg"
                             :price 9000
                             :sold-out false}}))
+
+(defn component
+  []
+  [:div])
+  
