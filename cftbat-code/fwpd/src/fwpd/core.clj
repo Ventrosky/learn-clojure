@@ -62,6 +62,18 @@
     (append col rec) 
     col))
 
+(defn string-record
+  [record]
+  (let [{name :name
+         index :glitter-index} record]
+    (str name "," index)))
+
+(defn csv-string
+  [col]
+  (clojure.string/join 
+   "\n"
+   (map string-record col)))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
