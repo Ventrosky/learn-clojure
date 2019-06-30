@@ -36,6 +36,31 @@
   [minimum-glitter records]
   (filter #(>= (:glitter-index %) minimum-glitter) records))
 
+(defn list-names
+  [col]
+  (map :name col))
+
+(def validations {:name string?
+                  :glitter-index integer?})
+
+(defn append
+  [col s]
+  (conj col s))
+
+(defn validate
+  [valid-map record]
+  (every? identity
+          (map 
+           #(and 
+             (contains? record %)
+             ((get valid-map %) (% record)))
+           (keys valid-map))))
+
+(defn append-valid 
+  [col rec]
+  (if (validate validations rec) 
+    (append col rec) 
+    col))
 
 (defn -main
   "I don't do a whole lot ... yet."
