@@ -1,3 +1,4 @@
+    
 (ns giggin.components.gigs
   (:require [giggin.state :as state]
             [giggin.helpers :refer [format-price]]
@@ -14,7 +15,7 @@
         toggle-modal (fn
                        [{:keys [active gig]}]
                        (swap! modal assoc :active active)
-                       (reset! values gig ))
+                       (reset! values gig))
         upsert-gig (fn [{:keys [id title desc price img sold-out]}]
                      (swap! state/gigs assoc id {:id (or id (str "gig-" (random-uuid)))
                                                  :title (str/trim title)
@@ -32,14 +33,14 @@
          [:div.add__title
           [:i.icon.icon--plus]
           [:p "Add gig"]]]
-        [gig-editor {:modal modal 
-                     :values values 
-                     :upsert-gig upsert-gig 
+        [gig-editor {:modal modal
+                     :values values
+                     :upsert-gig upsert-gig
                      :toggle-modal toggle-modal
                      :initial-values initial-values}]
-        (for [{:keys [id img title price desc] :as gig}  (vals @state/gigs)] ;;(map (fn [gig] 
+        (for [{:keys [id img title price desc] :as gig} (vals @state/gigs)]
           [:div.gig {:key id}
-           [:img.gig__artwork.gig__edit {:src img 
+           [:img.gig__artwork.gig__edit {:src img
                                          :alt title
                                          :on-click #(toggle-modal {:active true
                                                                    :gig gig})}]
