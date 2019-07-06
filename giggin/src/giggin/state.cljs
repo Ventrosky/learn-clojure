@@ -5,7 +5,5 @@
 
 (def gigs (r/atom {}))
 
-(defn component
-  []
-  [:div])
+(def user (r/atom nil))
   
