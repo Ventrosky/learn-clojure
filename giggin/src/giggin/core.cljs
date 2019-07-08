@@ -16,11 +16,15 @@
    [orders]
    [footer]])
 
+(defn ^:dev/after-load start
+  []
+  (r/render
+   [app]
+   (.getElementById js/document "app")))
+
 (defn ^:export main
   []
   ;(api/fetch-gigs)
-  (r/render
-   [app]
-   (.getElementById js/document "app"))
+  (start)
   (firebase-init)
   (db-subscribe ["gigs"]))
