@@ -9,3 +9,6 @@ Source code for the [Learn Reagent](https://www.learnreagent.com) Course, build 
 )
 ## web-dev-with-clj
 Code from the book [Web Development with Clojure](https://pragprog.com/book/dswdcloj3/web-development-with-clojure-third-edition) published by [The Pragmatic Bookshelf](https://pragprog.com/).
+
+## genera-flussi
+Reagent app for generating "testing data streams". Written for educational and recreational purposes.
