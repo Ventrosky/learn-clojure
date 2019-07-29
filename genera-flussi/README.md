@@ -1,15 +1,11 @@
-# shadow-cljs, proto-repl, reagent template
+# Data streams generator Reagent app
 
-`shadow-cljs` is a build tool for ClojureScript.
-
-`proto-repl` is a Clojure(Script) dev env for [Atom](https://atom.io/)
-
-`reagent` is a ClojureScript wrapper for [React](https://reactjs.org/).
+Web app built with Reagent for generating data streams. Written entirely for educational and recreational purposes, it is extremely inefficient but serves the scope of generating ~20k csv files quickly for other projects tests.
 
 ## Setup And Run
 #### Copy repository
 ```shell
-git clone https://github.com/jacekschae/shadow-reagent.git && cd shadow-reagent
+git clone https://github.com/Ventrosky/learn-clojure.git && cd genera-flussi
 ```
 
 #### Install dependencies

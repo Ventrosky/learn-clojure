@@ -166,9 +166,10 @@
                               :gen02 ["E","718","XXXXX","F","02/02/1902","2","100000","","","","02/01/1980","","","","A00",""]
                               :gen03 ["E","718","XXXXX","M","03/03/1903","3","100000","","","","03/01/1980","","","","A00",""]}))
 
-(defonce censimento (atom {:carta {:name "CARTA"
+(defonce censimento (atom {:carta {:name "CARTA (CTAAP)"
                                    :code :carta
                                    :sort 5}}))
 
 
-(defonce app-setting (atom {:num 100}))
+(defonce app-setting (atom {:num 100
+                            :loading false}))

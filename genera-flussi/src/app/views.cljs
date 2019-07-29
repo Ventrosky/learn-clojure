@@ -120,7 +120,7 @@
 (defn app []
   [:div ; to-do use re-frame 
    [:> container
-    [:> header {:content "Generatore di Tracciati" :textAlign "center" :as "h1"}]
+    [:> header {:content "Generatore di Flussi" :textAlign "center" :as "h1"}]
     [:> grid {:columns 2 :stackable true}
       [:> grid-row
        [:> grid-column
