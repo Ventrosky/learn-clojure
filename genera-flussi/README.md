@@ -1,6 +1,6 @@
 # Data streams generator Reagent app
 
-Web app built with Reagent for generating data streams. Written entirely for educational and recreational purposes, it is extremely inefficient but serves the scope of generating ~20k csv files quickly for other projects tests.
+Web app built with Reagent for generating data streams. Written entirely for educational and recreational purposes, it is extremely inefficient but serves the scope of generating ~20k rows csv files quickly for other projects tests.
 
 ## Setup And Run
 #### Copy repository
