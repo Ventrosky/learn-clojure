@@ -106,13 +106,61 @@
          (gen-single-seq :categoria ["A00" "A01" "A02" "P00" "P01" "P02" "P03"])
          (gen-single-seq :dtnasc dsmotivo))))
 
+(def fu-gen-record-carbp
+  {:cdoper #(repeat (no-nill-str %))
+   :nupoliz #(repeat (no-nill-str %))
+   :dsnome #(repeat "")
+   :dscognome #(repeat "")
+   :cdfisc #(repeat "")
+   :dtnasc (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
+   :dtentrata (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
+   :dtuscita (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
+   :imptcm  (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
+   :impci (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
+   :impre (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
+   :impdd (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
+   :categoria (fn [categorie] (repeatedly #(rand-nth categorie)))
+   :domanda1 (fn [answers] (repeatedly #(rand-nth answers))) 
+   :domanda2 (fn [answers] (repeatedly #(rand-nth answers)))
+   :domanda3 (fn [answers] (repeatedly #(rand-nth answers)))
+   :domanda4 (fn [answers] (repeatedly #(rand-nth answers)))
+   :aws (fn [answers] (repeatedly #(rand-nth answers)))})
+
+(defn genera-carbp
+  [dati-form]
+  (let [{:keys [cdoper nupoliz dsnome dscognome cdfisc dtnasc dtentrata dtuscita imptcm impci impre impdd categoria domanda1 domanda2 domanda3 domanda4 aaw]
+         :or {cdoper "E" categoria ["A00" "A01" "A02" "P00" "P01" "P02" "P03"]}} dati-form
+        gen-single-seq (fn [nkey nval] ((nkey fu-gen-record-carbp) nval))]
+    (map vector
+         (gen-single-seq :cdoper cdoper)
+         (gen-single-seq :nupoliz nupoliz)
+         (gen-single-seq :dsnome dsnome)
+         (gen-single-seq :dscognome dscognome)
+         (gen-single-seq :cdfisc cdfisc)
+         (gen-single-seq :dtnasc dtnasc)
+         (gen-single-seq :dtentrata dtentrata)
+         (gen-single-seq :dtuscita dtuscita)
+         (gen-single-seq :imptcm imptcm)
+         (gen-single-seq :impci impci)
+         (gen-single-seq :impre impre)
+         (gen-single-seq :impdd impdd)
+         (gen-single-seq :categoria ["A00" "A01" "A02" "P00" "P01" "P02" "P03"])
+         (gen-single-seq :domanda1 ["S" "N"])
+         (gen-single-seq :domanda2 ["S" "N"])
+         (gen-single-seq :domanda3 ["S" "N"])
+         (gen-single-seq :domanda4 ["S" "N"])
+         (gen-single-seq :aws ["S" "N"]))))
+
 (def numbers (iterate inc 1))
 
 (def titles (map #(str "gen-" %) numbers))
 
 (defn genera-carta-n
-  [n spec-in]
-    (clojure.walk/keywordize-keys (zipmap titles (take n (genera-carta spec-in)))))
+  [n spec-in key]
+  (let [fu-key (case key
+                 :carta genera-carta
+                 :carbp genera-carbp)]
+    (clojure.walk/keywordize-keys (zipmap titles (take n (fu-key spec-in))))))
 
 (defn section
   [cname title elem]

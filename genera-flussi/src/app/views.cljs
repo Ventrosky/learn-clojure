@@ -1,5 +1,5 @@
 (ns app.views
-  (:require [app.state :refer [app-state app-generated censimento app-setting]]
+  (:require [app.state :refer [app-state app-generated censimento app-setting app-inputato]]
             [app.events :refer [increment decrement]]
             [cljsjs.semantic-ui-react]
             [reagent.core :refer [atom]]
@@ -85,16 +85,19 @@
                 :color "blue"
                 :on-click (fn [evt]
                             (let [x (:num @app-setting)
-                                  new-records (genera-carta-n x @s)]
+                                  new-records (genera-carta-n x @s (:selected @app-setting))]
                               (reset! app-generated new-records)))} "Submit"]]]])
+
+(defn build-form-atom
+  []
+  (reduce #(assoc %1 (:code %2) (or (first (:dominio %2)) "")) {} ((:selected @app-setting) @app-state)))
 
 (defn form-tracciato
   [campi]
-  (let [specs (first campi)
-        s (atom (reduce #(assoc %1 (:code %2) (or (first (:dominio %2)) "")) {} specs) )];;(inputati specs)
-    (fn []
-      [:> form
-       [content specs s]])))
+  (let [s app-inputato];;(inputati specs)
+      (fn []
+        [:> form
+         [content ((:selected @app-setting) @app-state) s]])))
 
 (defn tabella-generata
   [records testata]
@@ -124,20 +127,23 @@
     [:> grid {:columns 2 :stackable true}
       [:> grid-row
        [:> grid-column
-        [:select.ui.dropdown ; to-do select tracciato from dropdown
+        [:select.ui.dropdown {:on-change (fn [e]
+                                           (do 
+                                             (swap! app-setting assoc :selected (keyword (-> e .-target .-value)))
+                                             (reset! app-inputato (build-form-atom))))}
          (for [trc (vals @censimento)]
-           [:option {:value (:name trc) :key (:name trc)} (:name trc)])]]
+           [:option {:value (:code trc) :key (:name trc)} (:name trc)])]]
         [:> grid-column
          [:> input { :placeholder (:num @app-setting)
                     :on-change (fn [e]
                                  (swap! app-setting assoc :num (js/parseInt (-> e .-target .-value))))}]]]]
     [:> divider]
-    [form-tracciato (vals @app-state)]
+    [form-tracciato @app-state]
     [:> divider]
     [:> grid {:columns 1 :stackable true}
      [:> grid-row
       [:> grid-column {:style {:overflow-x "scroll"}}
-       [tabella-generata (vals @app-generated) (map #(:nome %) (first (vals @app-state)))]]]
+       [tabella-generata (vals @app-generated) (map #(:nome %) ((:selected @app-setting) @app-state))]]]
      [:> grid-row
       [:> grid-column
        [:> button {:color "blue"
