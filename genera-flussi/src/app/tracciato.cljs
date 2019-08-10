@@ -170,13 +170,13 @@
         pos-cognome 3
         pos-nasc 5
         do-cdfisc (fn [rec]
-                        (gen-cdfisc (nth rec pos-nome) (nth rec pos-cognome) (nth rec pos-nasc)))
+                    (gen-cdfisc (nth rec pos-nome) (nth rec pos-cognome) (nth rec pos-nasc)))
         with-cdfisc (fn [rec]
-                       (assoc rec pos-cdfisc (do-cdfisc rec)))]
+                      (assoc rec pos-cdfisc (do-cdfisc rec)))]
 (case key
   :carta (clojure.walk/keywordize-keys (zipmap titles (take n (genera-carta spec-in))))
   :carbp (clojure.walk/keywordize-keys ((fn [m]
-                  (into {} (for [[k v] m] [k (with-cdfisc v)])))) (zipmap titles (take n (genera-carbp spec-in)))))))
+                                          (into {} (for [[k v] m] [k (with-cdfisc v)]))) (zipmap titles (take n (genera-carbp spec-in))))))))
 
 (defn nome-flusso
   [rec trac]
