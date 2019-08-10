@@ -119,7 +119,8 @@
    :dscognome (fn [rlst] (repeatedly #(rand-nth rlst)))
    :cdfisc #(repeat "")
    :dtnasc (fn [dt-str] (let [val (if (clojure.string/blank? dt-str)
-                                    "01/01/1970;31/12/1984")]
+                                    "01/01/1970;31/12/1984"
+                                    dt-str)]
                           (repeatedly #(rng-date-in val))))
    :dtentrata (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
    :dtuscita (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
