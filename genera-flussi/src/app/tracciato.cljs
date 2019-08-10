@@ -2,8 +2,9 @@
   (:require [goog.string :as gstring]
             [goog.string.format]
             [clojure.walk]
-            [app.state :refer [app-anagrafe]]
-            [app.soggetto :refer [gen-cdfisc]]))
+            [app.state :refer [app-anagrafe app-generated]]
+            [app.soggetto :refer [gen-cdfisc]]
+            [clojure.string :refer [upper-case]]))
 
 (def cognomi (:cognomi @app-anagrafe))
 
@@ -117,7 +118,9 @@
    :dsnome (fn [rlst] (repeatedly #(rand-nth rlst)))
    :dscognome (fn [rlst] (repeatedly #(rand-nth rlst)))
    :cdfisc #(repeat "")
-   :dtnasc (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
+   :dtnasc (fn [dt-str] (let [val (if (clojure.string/blank? dt-str)
+                                    "01/01/1970;31/12/1984")]
+                          (repeatedly #(rng-date-in val))))
    :dtentrata (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
    :dtuscita (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
    :imptcm  (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
@@ -125,7 +128,7 @@
    :impre (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
    :impdd (fn [imp-str] (repeatedly #(rng-importo-in imp-str)))
    :categoria (fn [categorie] (repeatedly #(rand-nth categorie)))
-   :domanda1 (fn [answers] (repeatedly #(rand-nth answers))) 
+   :domanda1 (fn [answers] (repeatedly #(rand-nth answers)))
    :domanda2 (fn [answers] (repeatedly #(rand-nth answers)))
    :domanda3 (fn [answers] (repeatedly #(rand-nth answers)))
    :domanda4 (fn [answers] (repeatedly #(rand-nth answers)))
@@ -178,14 +181,23 @@
                 (do 
                   (js/console.log m)
                   (into {} (for [[k v] m] [k (with-cdfisc v)])))) (zipmap titles (take n (genera-carbp spec-in))))))))
-  
+
+(defn nome-flusso
+  [rec]
+  (let [[cdoper _] rec]
+    (str cdoper "_" (upper-case (#(.toString % 16) (.getTime (js/Date.)))) ".csv")))
+
 (defn download-trc
-  [name record-text]
-  (let [link (.createElement js/document "a")
+  []
+  (let [record-text (vals @app-generated)
+        name (nome-flusso (first record-text))
+        link (.createElement js/document "a")
         text (clojure.string/join "\n" (map #(clojure.string/join "|" %) (sort-by #(nth % 5) record-text)))
         text-enc (str "data:text/plain;charset=utf-8," (.encodeURIComponent js/window text))]
-    (set! (.-href link) text-enc)
-    (.setAttribute link "download" name)
-    (.appendChild (.-body js/document) link)
-    (.click link)
-    (.removeChild (.-body js/document) link)))
+    (when-not (empty? record-text)
+      (do
+        (set! (.-href link) text-enc)
+        (.setAttribute link "download" name)
+        (.appendChild (.-body js/document) link)
+        (.click link)
+        (.removeChild (.-body js/document) link)))))

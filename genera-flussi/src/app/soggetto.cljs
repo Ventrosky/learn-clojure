@@ -1,5 +1,5 @@
 (ns app.soggetto  
-  (:require [clojure.string :refer [split-lines split upper-case]]
+  (:require [clojure.string :refer [split-lines split upper-case blank?]]
             [app.state :refer [app-anagrafe]]))
 
 (def mesi {"01" "a"
@@ -78,7 +78,9 @@
 
 (defn calc-dtnas
   [data sex]
-  (let [dati (split data "/")
+  (let [dati (if (blank? data) 
+               ["01" "01" "1970"]
+               (split data "/"))
         anno (subs (dati 2) 2)
         mese (mesi (dati 1))
         giorno (calc-giorno (dati 0) sex)]

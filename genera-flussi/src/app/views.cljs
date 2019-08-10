@@ -80,14 +80,18 @@
    (for [{:keys [nome descrizione dominio tipo obbligatorio specifiche code]} (inputati items)]
      ^{:key nome}
      [posfield s nome descrizione dominio tipo obbligatorio specifiche code])
-   [:> grid-row {:columns 1}
-   [:> grid-column 
-    [:> button {:type "submit" 
-                :color "blue"
-                :on-click (fn [evt]
-                            (let [x (:num @app-setting)
-                                  new-records (genera-carta-n x @s (:selected @app-setting))]
-                              (reset! app-generated new-records)))} "Submit"]]]])
+   [:> grid-row {:columns 2 :style {:text-align "center"}}
+    [:> grid-column 
+     [:> button {:type "submit" 
+                 :color "blue"
+                 :on-click (fn [evt]
+                             (let [x (:num @app-setting)
+                                   new-records (genera-carta-n x @s (:selected @app-setting))]
+                               (reset! app-generated new-records)))} "Genera"]]
+    [:> grid-column
+     [:> button {:color "blue"
+                 :on-click (fn [evt]
+                             (download-trc))} "Esporta"]]]])
 
 (defn build-form-atom
   []
@@ -124,9 +128,13 @@
 (defn app []
   [:div ; to-do use re-frame 
    [:> container
-    [:> header {:content "Generatore di Flussi" :textAlign "center" :as "h1"}]
+    [:> header {:content "Generatore di Flussi" 
+                :textAlign "center" 
+                :as "h1" 
+                :style {:color "#2185d0" 
+                        :padding "1em"}}]
     [:> grid {:columns 2 :stackable true}
-      [:> grid-row
+      [:> grid-row {:style {:textAlign "center"}}
        [:> grid-column
         [:select.ui.dropdown {:on-change (fn [e]
                                            (do 
@@ -144,10 +152,10 @@
     [:> divider]
     [:> grid {:columns 1 :stackable true}
      [:> grid-row
-      [:> grid-column {:style {:overflow-x "scroll"}}
-       [tabella-generata (vals @app-generated) (map #(:nome %) ((:selected @app-setting) @app-state))]]]
-     [:> grid-row
-      [:> grid-column
-       [:> button {:color "blue"
-                   :on-click (fn [evt]
-                               (download-trc (str (.getTime (js/Date.)) ".csv") (vals @app-generated)))} "Export"]]]]]])
+      [:div {:style {:overflow-x "scroll" 
+                     :padding "0px"
+                     :border "dashed"
+                     :border-color "#2185d0"
+                     :border-radius "10px"
+                     :margin-top "1.5em"}}
+       [tabella-generata (vals @app-generated) (map #(:nome %) ((:selected @app-setting) @app-state))]]]]]])
