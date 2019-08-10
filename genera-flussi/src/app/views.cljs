@@ -64,7 +64,8 @@
                  :on-change (fn [e]
                               (swap! satom assoc code (-> e .-target .-value)))
                  :key pname}]
-        [:select.ui.dropdown {:on-change (fn [e] (swap! satom assoc code (-> e .-target .-value)))}
+        [:select.ui.dropdown {:on-change (fn [e] 
+                                           (swap! satom assoc code (-> e .-target .-value)))}
          (for [d dominio]
            [:option {:value d 
                      :key d} d])])]]))
@@ -130,7 +131,8 @@
         [:select.ui.dropdown {:on-change (fn [e]
                                            (do 
                                              (swap! app-setting assoc :selected (keyword (-> e .-target .-value)))
-                                             (reset! app-inputato (build-form-atom))))}
+                                             (reset! app-inputato (build-form-atom))
+                                             (reset! app-generated {})))}
          (for [trc (vals @censimento)]
            [:option {:value (:code trc) :key (:name trc)} (:name trc)])]]
         [:> grid-column

@@ -1,8 +1,13 @@
 (ns app.tracciato
-  (:require [cljsjs.semantic-ui-react :as ui]
-            [goog.string :as gstring]
+  (:require [goog.string :as gstring]
             [goog.string.format]
-            [clojure.walk]))
+            [clojure.walk]
+            [app.state :refer [app-anagrafe]]
+            [app.soggetto :refer [gen-cdfisc]]))
+
+(def cognomi (:cognomi @app-anagrafe))
+
+(def nomi (:nomi @app-anagrafe))
 
 ;;"This function returns js/Date from a clj String"
 (defn string-to-date-obj
@@ -109,8 +114,8 @@
 (def fu-gen-record-carbp
   {:cdoper #(repeat (no-nill-str %))
    :nupoliz #(repeat (no-nill-str %))
-   :dsnome #(repeat "")
-   :dscognome #(repeat "")
+   :dsnome (fn [rlst] (repeatedly #(rand-nth rlst)))
+   :dscognome (fn [rlst] (repeatedly #(rand-nth rlst)))
    :cdfisc #(repeat "")
    :dtnasc (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
    :dtentrata (fn [dt-str] (repeatedly #(rng-date-in dt-str)))
@@ -134,8 +139,8 @@
     (map vector
          (gen-single-seq :cdoper cdoper)
          (gen-single-seq :nupoliz nupoliz)
-         (gen-single-seq :dsnome dsnome)
-         (gen-single-seq :dscognome dscognome)
+         (gen-single-seq :dsnome nomi)
+         (gen-single-seq :dscognome cognomi)
          (gen-single-seq :cdfisc cdfisc)
          (gen-single-seq :dtnasc dtnasc)
          (gen-single-seq :dtentrata dtentrata)
@@ -157,22 +162,23 @@
 
 (defn genera-carta-n
   [n spec-in key]
-  (let [fu-key (case key
-                 :carta genera-carta
-                 :carbp genera-carbp)]
-    (clojure.walk/keywordize-keys (zipmap titles (take n (fu-key spec-in))))))
-
-(defn section
-  [cname title elem]
-  [:section {:class (str "section-wrapper" cname)}
-   [:div.container
-    [:div.row
-     [:div.col-md-3
-      [:div.section-title
-       [:h2 title]]]
-     [:div.col-md-9
-      elem]]]])
-
+  (let [pos-cdfisc 4
+        pos-nome 2 ; to-do get positions from tracciato
+        pos-cognome 3
+        pos-nasc 5
+        do-cdfisc (fn [rec]
+                      (do 
+                        (js/console.log rec)
+                        (gen-cdfisc (nth rec pos-nome) (nth rec pos-cognome) (nth rec pos-nasc))))
+        with-cdfisc (fn [rec]
+                       (assoc rec pos-cdfisc (do-cdfisc rec)))]
+(case key
+  :carta (clojure.walk/keywordize-keys (zipmap titles (take n (genera-carta spec-in))))
+  :carbp (clojure.walk/keywordize-keys ((fn [m]
+                (do 
+                  (js/console.log m)
+                  (into {} (for [[k v] m] [k (with-cdfisc v)])))) (zipmap titles (take n (genera-carbp spec-in))))))))
+  
 (defn download-trc
   [name record-text]
   (let [link (.createElement js/document "a")
