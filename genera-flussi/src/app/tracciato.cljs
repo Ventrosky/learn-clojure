@@ -189,7 +189,7 @@
         trac-name (:name ((:selected @app-setting) @censimento))
         name (nome-flusso (first record-text) trac-name)
         link (.createElement js/document "a")
-        text (clojure.string/join "\n" (map #(clojure.string/join "|" %) (sort-by #(nth % 5) record-text)))
+        text (upper-case (clojure.string/join "\n" (map #(clojure.string/join "|" %) (sort-by #(nth % 5) record-text))))
         text-enc (str "data:text/plain;charset=utf-8," (.encodeURIComponent js/window text))]
     (when-not (empty? record-text)
       (do
