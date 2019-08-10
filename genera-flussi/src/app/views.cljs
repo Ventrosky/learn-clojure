@@ -115,10 +115,10 @@
    [:> table-body ; to-do sort by using nth number from state
     (for [riga (sort-by #(nth % 5) records)]
       ^{:key (random-uuid)}
-      [:> table-row
+      [:> table-row 
        (for [campo riga]
          ^{:key (random-uuid)}
-         [:> table-cell campo])])]
+         [:> table-cell (clojure.string/upper-case (str campo))])])]
    [:> table-footer]])
 
 (defn nomi-tracciati

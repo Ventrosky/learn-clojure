@@ -2,7 +2,7 @@
   (:require [goog.string :as gstring]
             [goog.string.format]
             [clojure.walk]
-            [app.state :refer [app-anagrafe app-generated]]
+            [app.state :refer [app-anagrafe app-generated app-setting censimento]]
             [app.soggetto :refer [gen-cdfisc]]
             [clojure.string :refer [upper-case]]))
 
@@ -183,14 +183,15 @@
                   (into {} (for [[k v] m] [k (with-cdfisc v)])))) (zipmap titles (take n (genera-carbp spec-in))))))))
 
 (defn nome-flusso
-  [rec]
+  [rec trac]
   (let [[cdoper _] rec]
-    (str cdoper "_" (upper-case (#(.toString % 16) (.getTime (js/Date.)))) ".csv")))
+    (str cdoper "_" trac "_" (upper-case (#(.toString % 16) (.getTime (js/Date.)))) ".csv")))
 
 (defn download-trc
   []
   (let [record-text (vals @app-generated)
-        name (nome-flusso (first record-text))
+        trac-name (:name ((:selected @app-setting) @censimento))
+        name (nome-flusso (first record-text) trac-name)
         link (.createElement js/document "a")
         text (clojure.string/join "\n" (map #(clojure.string/join "|" %) (sort-by #(nth % 5) record-text)))
         text-enc (str "data:text/plain;charset=utf-8," (.encodeURIComponent js/window text))]

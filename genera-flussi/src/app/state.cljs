@@ -344,7 +344,7 @@
 
 (defonce app-generated (atom {}))
 
-(defonce censimento (atom {:carta {:name "CARTA (CTAAP)"
+(defonce censimento (atom {:carta {:name "CARTA"
                                    :code :carta
                                    :sort 5}
                            :carbp {:name "CARBP"
