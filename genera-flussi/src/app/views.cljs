@@ -115,7 +115,7 @@
    [:> table-body ; to-do sort by using nth number from state
     (for [riga (sort-by #(nth % 5) records)]
       ^{:key (random-uuid)}
-      [:> table-row 
+      [:> table-row {:style {:white-space "nowrap"}}
        (for [campo riga]
          ^{:key (random-uuid)}
          [:> table-cell (clojure.string/upper-case (str campo))])])]
